@@ -1,0 +1,50 @@
+Строки считаются в craft.py, пересобранном через ast.unparse без докстрингов.
+
+  1  убит              строка 5: переставлены «if recipe_name not in RECIPES:» и «recipe = RECIPES[recipe_name]»
+  2  ВЫЖИЛ             строка 7: переставлены «recipe = RECIPES[recipe_name]» и «if type(player_level) is not int or player_level < 1:»
+  3  убит              строка 8: переставлены «if type(player_level) is not int or player_level < 1:» и «if player_level < recipe['level']:»
+  4  ВЫЖИЛ             строка 10: переставлены «if player_level < recipe['level']:» и «spent = []»
+  5  убит              строка 12: переставлены «spent = []» и «for name, need in recipe['ingredients'].items():»
+  6  ВЫЖИЛ             строка 13: переставлены «for name, need in recipe['ingredients'].items():» и «if len(inventory) >= CAPACITY:»
+  7  убит              строка 19: переставлены «if len(inventory) >= CAPACITY:» и «if random.random() < recipe['fail_chance']:»
+  8  ВЫЖИЛ             строка 21: переставлены «if random.random() < recipe['fail_chance']:» и «taken = [inventory[i] for i in spent]»
+  9  убит              строка 23: переставлены «taken = [inventory[i] for i in spent]» и «result = {'name': recipe_name, 'quality': min((t['quality'] for t in taken))}»
+ 10  ВЫЖИЛ             строка 24: переставлены «result = {'name': recipe_name, 'quality': min((t['quality'] for t in taken))}» и «removed = set(spent)»
+ 11  убит              строка 25: переставлены «removed = set(spent)» и «inventory[:] = [t for i, t in enumerate(inventory) if i not in removed] + [result]»
+ 12  убит              строка 26: переставлены «inventory[:] = [t for i, t in enumerate(inventory) if i not in removed] + [result]» и «return result»
+ 13  убит              строка 5: «if recipe_name not in RECIPES:» заменено на pass
+ 14  убит              строка 7: «recipe = RECIPES[recipe_name]» заменено на pass
+ 15  убит              строка 8: «if type(player_level) is not int or player_level < 1:» заменено на pass
+ 16  убит              строка 10: «if player_level < recipe['level']:» заменено на pass
+ 17  убит              строка 12: «spent = []» заменено на pass
+ 18  убит              строка 13: «for name, need in recipe['ingredients'].items():» заменено на pass
+ 19  убит              строка 19: «if len(inventory) >= CAPACITY:» заменено на pass
+ 20  убит              строка 21: «if random.random() < recipe['fail_chance']:» заменено на pass
+ 21  убит              строка 23: «taken = [inventory[i] for i in spent]» заменено на pass
+ 22  убит              строка 24: «result = {'name': recipe_name, 'quality': min((t['quality'] for t in taken))}» заменено на pass
+ 23  убит              строка 25: «removed = set(spent)» заменено на pass
+ 24  убит              строка 26: «inventory[:] = [t for i, t in enumerate(inventory) if i not in removed] + [result]» заменено на pass
+ 25  убит              строка 27: «return result» заменено на pass
+ 26  убит              строка 6: «raise ValueError('нет такого рецепта: ' + recipe_name)» заменено на pass
+ 27  убит              строка 9: «raise ValueError('уровень игрока должен быть целым числом от 1')» заменено на pass
+ 28  убит              строка 11: «raise ValueError('уровень мал для рецепта')» заменено на pass
+ 29  убит              строка 14: переставлены «indexes = [i for i, thing in enumerate(inventory) if thing['name'] == name and (not thing.get('equipped', False))]» и «if len(indexes) < need:»
+ 30  ВЫЖИЛ             строка 15: переставлены «if len(indexes) < need:» и «indexes.sort(key=lambda i: (-inventory[i]['quality'], i))»
+ 31  убит              строка 17: переставлены «indexes.sort(key=lambda i: (-inventory[i]['quality'], i))» и «spent.extend(indexes[:need])»
+ 32  убит              строка 14: «indexes = [i for i, thing in enumerate(inventory) if thing['name'] == name and (not thing.get('equipped', False))]» заменено на pass
+ 33  убит              строка 15: «if len(indexes) < need:» заменено на pass
+ 34  убит              строка 17: «indexes.sort(key=lambda i: (-inventory[i]['quality'], i))» заменено на pass
+ 35  убит              строка 18: «spent.extend(indexes[:need])» заменено на pass
+ 36  убит              строка 20: «raise ValueError('нет свободной ячейки в инвентаре')» заменено на pass
+ 37  убит              строка 22: «return None» заменено на pass
+ 38  убит              строка 8: if type(player_level) is not int or player_level < 1:  ->  if type(player_level) is not int and player_level < 1:
+ 39  убит              строка 10: if player_level < recipe['level']:  ->  if player_level <= recipe['level']:
+ 40  убит              строка 16: «raise ValueError('не хватает ингредиента: ' + name)» заменено на pass
+ 41  убит              строка 19: if len(inventory) >= CAPACITY:  ->  if len(inventory) > CAPACITY:
+ 42  убит              строка 21: if random.random() < recipe['fail_chance']:  ->  if random.random() <= recipe['fail_chance']:
+ 43  убит              строка 8: if type(player_level) is not int or player_level < 1:  ->  if type(player_level) is not int or player_level <= 1:
+ 44  убит              строка 15: if len(indexes) < need:  ->  if len(indexes) <= need:
+ 45  убит              строка 14: indexes = [i for i, thing in enumerate(inventory) if thing['name'] == name and (not thing.get('equipped', False))]  ->  indexes = [i for i, thing in enumerate(inventory) if thing['name'] == name or not thing.get('equipped', False)]
+ 46  убит              строка 14: indexes = [i for i, thing in enumerate(inventory) if thing['name'] == name and (not thing.get('equipped', False))]  ->  indexes = [i for i, thing in enumerate(inventory) if thing['name'] != name and (not thing.get('equipped', False))]
+
+выжило мутантов: 6

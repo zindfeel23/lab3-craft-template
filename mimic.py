@@ -34,7 +34,80 @@ def mutants(source):
     ast.walk для одного и того же исходника всегда один и тот же, поэтому
     нужный узел в свежем дереве можно найти по его номеру.
     """
-    raise NotImplementedError
+    _SHIFT = {
+        ast.Lt: ast.LtE,
+        ast.LtE: ast.Lt,
+        ast.Gt: ast.GtE,
+        ast.GtE: ast.Gt,
+        ast.Eq: ast.NotEq,
+        ast.NotEq: ast.Eq,
+    }
+
+    original_nodes = list(ast.walk(ast.parse(source)))
+    produced = []
+
+    def emit(edit):
+        tree = ast.parse(source)
+        fresh = list(ast.walk(tree))
+        edit(fresh)
+        produced.append(ast.unparse(tree))
+
+    for idx, node in enumerate(original_nodes):
+        if isinstance(node, ast.Compare):
+            for pos, op in enumerate(node.ops):
+                new_cls = _SHIFT.get(type(op))
+                if new_cls is not None:
+                    emit(_shift_op(idx, pos, new_cls))
+
+        if isinstance(node, ast.BoolOp) and isinstance(node.op, (ast.And, ast.Or)):
+            emit(_flip_bool(idx))
+
+        if isinstance(node, ast.Module):
+            continue
+        for field in ("body", "orelse"):
+            block = getattr(node, field, None)
+            if not isinstance(block, list):
+                continue
+            for k in range(len(block) - 1):
+                emit(_swap(idx, field, k))
+            for k in range(len(block)):
+                if isinstance(block[k], ast.Pass):
+                    continue
+                emit(_to_pass(idx, field, k))
+
+    seen = set()
+    result = []
+    for mutant in produced:
+        if mutant not in seen:
+            seen.add(mutant)
+            result.append(mutant)
+    return result
+
+
+def _shift_op(idx, pos, new_cls):
+    def edit(nodes):
+        nodes[idx].ops[pos] = new_cls()
+    return edit
+
+
+def _flip_bool(idx):
+    def edit(nodes):
+        op = nodes[idx].op
+        nodes[idx].op = ast.Or() if isinstance(op, ast.And) else ast.And()
+    return edit
+
+
+def _swap(idx, field, k):
+    def edit(nodes):
+        block = getattr(nodes[idx], field)
+        block[k], block[k + 1] = block[k + 1], block[k]
+    return edit
+
+
+def _to_pass(idx, field, k):
+    def edit(nodes):
+        getattr(nodes[idx], field)[k] = ast.Pass()
+    return edit
 
 
 # ---------------------------------------------------------------- дальше уже написано
